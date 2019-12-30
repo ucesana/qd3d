@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick and Dirty 3D</title>
+
+    <link rel="icon" href="qd.ico">
+
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+            overflow: hidden;
+        }
+
+        .viewport {
+            border: thin solid black;
+            box-shadow: 10px 10px 5px #888888;
+        }
+
+        .centre {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="viewport" class="viewport centre hidden" title="Drop OBJ and texture files here"></canvas>
+
+    <script type="text/javascript" src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Setup viewport dimensions
+
+            // const aspectRatio = 1;
+            // const aspectRatio = 4/3;
+            // const aspectRatio = 5/4;
+            // const aspectRatio = 16/10;
+            const aspectRatio = 16/9;
+
+            // canvas pixels / viewport pixels
+            const pixelDensity = 1;
+
+            // canvas width and height
+            const width = 1920;
+            // const width = 1440;
+            const height = Math.floor(width * (1 / aspectRatio));
+
+            // Setup World
+
+            const objectFactory = new qd.ObjectFactory();
+            const cube1 = objectFactory.cube( {colour: {red: 1, green: 0.25, blue: 0.1}});
+            cube1.position = qd.Vec3.create(0, 0, 0);
+            cube1.rotation = qd.Vec3.create(1, 1, 1);
+
+            const cube2 = objectFactory.cube({colour: {red: 0.25, green: 0.5, blue: 1}});
+            cube2.position = qd.Vec3.create(2, 0, -12);
+
+            const world = new qd.World();
+            //world.objects.push(cube1);
+            //world.objects.push(cube2);
+
+            const lightA = qd.Light.distant( {
+                red: 1,
+                green: 0,
+                blue: 0,
+                intensity: 4,
+                direction: qd.Vec3.normalised(qd.Vec3.create(1, 0, 0))
+            });
+
+            const lightB = qd.Light.distant({
+                red: 0,
+                green: 1,
+                blue: 0,
+                intensity: 4,
+                direction: qd.Vec3.normalised(qd.Vec3.create(0, 1, 0))
+            });
+
+            const lightC = qd.Light.distant({
+                red: 0,
+                green: 0,
+                blue: 1,
+                intensity: 4,
+                direction: qd.Vec3.normalised(qd.Vec3.create(0, 0, 1))
+            });
+
+            const pointLightB = qd.Light.point({
+                red: 1,
+                green: 0,
+                blue: 0,
+                intensity: 100000,
+                position: qd.Vec3.create(100, 0, 0)
+            });
+
+            const pointLightC = qd.Light.point({
+                red: 0,
+                green: 1,
+                blue: 0,
+                intensity: 100000,
+                position: qd.Vec3.create(-100, 0, 0)
+            });
+
+            const pointLightA = qd.Light.point({
+                red: 0,
+                green: 0,
+                blue: 1,
+                intensity: 100000,
+                position: qd.Vec3.create()
+            });
+
+            world
+                .light(lightA)
+                .light(lightB)
+                .light(lightC)
+                .light(pointLightA)
+                .light(pointLightB)
+                .light(pointLightC);
+
+            const options = {
+                canvas: "viewport",
+                width: width,
+                height: height,
+                pixelWidth: pixelDensity,
+                pixelHeight: pixelDensity,
+                fNear: 1,
+                fFar: 5000,
+                fov: 90,
+                showWireframe: false,
+                showFaces: true,
+                wireframeColour: qd.Colour.ORANGE,
+                backfaceCulling: false,
+                ambientLight: 0.18,
+                reverseYAxis: true,
+                translationSpeed: 0.015,
+                rotationSpeed: 0.0005,
+                globalRotation: 0,
+                globalRotationSpeed: 0.0005,
+                backgroundColour: qd.Colour.of(0, 0, 0, 1),
+                world: world,
+                renderer: "raster"
+            };
+            const engine = new qd.Engine(options);
+            engine.run();
+            document.getElementById("viewport").classList.remove("hidden");
+        }, false);
+    </script>
+</body>
+</html>
