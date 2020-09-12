@@ -5,6 +5,8 @@
 
     <link rel="icon" href="qd.ico">
 
+    <meta charset="UTF-8">
+
     <style>
         body {
             margin: 0px;
@@ -115,6 +117,63 @@
                 position: qd.Vec3.create()
             });
 
+            const lightAGui = new qd.LightColourGuiAdaptor(lightA);
+            const lightBGui = new qd.LightColourGuiAdaptor(lightB);
+            const lightCGui = new qd.LightColourGuiAdaptor(lightC);
+
+            const pointLightAGui = new qd.LightColourGuiAdaptor(pointLightA);
+            const pointLightBGui = new qd.LightColourGuiAdaptor(pointLightB);
+            const pointLightCGui = new qd.LightColourGuiAdaptor(pointLightC);
+
+            const pointLightAPosXGui = new qd.LightPositionGuiAdaptor(pointLightA, 0);
+            const pointLightAPosYGui = new qd.LightPositionGuiAdaptor(pointLightA, 1);
+            const pointLightAPosZGui = new qd.LightPositionGuiAdaptor(pointLightA, 2);
+
+            const pointLightBPosXGui = new qd.LightPositionGuiAdaptor(pointLightB, 0);
+            const pointLightBPosYGui = new qd.LightPositionGuiAdaptor(pointLightB, 1);
+            const pointLightBPosZGui = new qd.LightPositionGuiAdaptor(pointLightB, 2);
+
+            const pointLightCPosXGui = new qd.LightPositionGuiAdaptor(pointLightC, 0);
+            const pointLightCPosYGui = new qd.LightPositionGuiAdaptor(pointLightC, 1);
+            const pointLightCPosZGui = new qd.LightPositionGuiAdaptor(pointLightC, 2);
+
+            const directionalLightsFolder = qd.gui.addFolder("Directional Lights");
+
+            const directionalLightAFolder = directionalLightsFolder.addFolder("Light A");
+            directionalLightAFolder.addColor(lightAGui, 'value').name('Colour A');
+            directionalLightAFolder.add(lightA, 'intensity', 0, 100000, 100).name('Intensity A');
+
+            const directionalLightBFolder = directionalLightsFolder.addFolder("Light B");
+            directionalLightBFolder.addColor(lightBGui, 'value').name('Colour B');
+            directionalLightBFolder.add(lightB, 'intensity', 0, 100000, 100).name('Intensity B');
+
+            const directionalLightCFolder = directionalLightsFolder.addFolder("Light C");
+            directionalLightCFolder.addColor(lightCGui, 'value').name('Colour C');
+            directionalLightCFolder.add(lightC, 'intensity', 0, 100000, 100).name('Intensity C');
+
+            const pointLightsFolder = qd.gui.addFolder("Point Lights");
+
+            const pointLightsAFolder = pointLightsFolder.addFolder("Light A");
+            pointLightsAFolder.addColor(pointLightAGui, 'value').name('Colour A');
+            pointLightsAFolder.add(pointLightA, 'intensity', 0, 10, 0.1).name('Intensity A');
+            pointLightsAFolder.add(pointLightAPosXGui, 'value').name('x');
+            pointLightsAFolder.add(pointLightAPosYGui, 'value').name('y');
+            pointLightsAFolder.add(pointLightAPosZGui, 'value').name('z');
+
+            const pointLightsBFolder = pointLightsFolder.addFolder("Light B");
+            pointLightsBFolder.addColor(pointLightBGui, 'value').name('Colour B');
+            pointLightsBFolder.add(pointLightB, 'intensity', 0, 10, 0.1).name('Intensity B');
+            pointLightsBFolder.add(pointLightBPosXGui, 'value').name('x');
+            pointLightsBFolder.add(pointLightBPosYGui, 'value').name('y');
+            pointLightsBFolder.add(pointLightBPosZGui, 'value').name('z');
+
+            const pointLightsCFolder = pointLightsFolder.addFolder("Light C");
+            pointLightsCFolder.addColor(pointLightCGui, 'value').name('Colour C');
+            pointLightsCFolder.add(pointLightC, 'intensity', 0, 10, 0.1).name('Intensity C');
+            pointLightsCFolder.add(pointLightCPosXGui, 'value').name('x');
+            pointLightsCFolder.add(pointLightCPosYGui, 'value').name('y');
+            pointLightsCFolder.add(pointLightCPosZGui, 'value').name('z');
+
             world
                 .light(lightA)
                 .light(lightB)
@@ -146,7 +205,15 @@
                 world: world,
                 renderer: "raster"
             };
+
             const engine = new qd.Engine(options);
+
+            if (engine.renderer.settings.renderer === 'vector') {
+                const wireframeFolder = qd.gui.addFolder("Wireframe");
+                wireframeFolder.add(engine.renderer.settings, 'showWireframe').name('Show/hide wireframe');
+                wireframeFolder.addColor(engine.renderer.settings, 'wireframeColour').name("Wireframe colour");
+            }
+
             engine.run();
             document.getElementById("viewport").classList.remove("hidden");
         }, false);

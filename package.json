@@ -24,7 +24,9 @@
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   },
-  "dependencies": {},
+  "dependencies": {
+    "dat.gui": "^0.7.7"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:ucesana/qd3d.git"
