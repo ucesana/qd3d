@@ -1,5 +1,5 @@
-import {Vec3} from "../mathematics/vec3";
-import {Object as QDObject} from "./object";
+import { Vec3 } from "../mathematics/vec3";
+import { Object as QDObject } from "./object";
 
 const AmbientLight = function (options) {
     const settings = Object.assign({
@@ -29,7 +29,7 @@ const DistantLight = function (options) {
         green: 1,
         blue: 1,
         intensity: 1,
-        direction: Vec3.create(0,0, 1)
+        direction: Vec3.create(0, 0, 1)
     }, options || {});
 
     this.red = settings.red;
@@ -53,7 +53,7 @@ const PointLight = function (options) {
         green: 1,
         blue: 1,
         intensity: 1,
-        position: Vec3.create(0,0, 0)
+        position: Vec3.create(0, 0, 0)
     }, options || {});
 
     this.red = settings.red;

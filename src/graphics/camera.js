@@ -1,8 +1,7 @@
-import {Mat44} from "../mathematics/mat44";
-import {Vec2} from "../mathematics/vec2";
-import {Vec3} from "../mathematics/vec3";
-import {Transform} from "../mathematics/transform";
-
+import { Mat44 } from "../mathematics/mat44";
+import { Transform } from "../mathematics/transform";
+import { Vec2 } from "../mathematics/vec2";
+import { Vec3 } from "../mathematics/vec3";
 
 export const Camera = function (options) {
     this.init = function (settings) {
@@ -139,7 +138,7 @@ export const Camera = function (options) {
         const rotateZ = Transform.rotateZ(this.roll, this.m3);
 
         const rotationXY = Mat44.multiply(rotateX, rotateY, this.m0);
-        const target = Vec3.set(this.v8,0, 0, -1);
+        const target = Vec3.set(this.v8, 0, 0, -1);
         const lookDir = Mat44.multiplyVector(target, rotationXY, this.v2);
 
         Vec3.add(this.position, lookDir, target);
@@ -163,11 +162,11 @@ export const Camera = function (options) {
      */
     Camera.prototype.lookAt = function (position, target) {
         const forward = Vec3.normalised(Vec3.subtract(position, target, this.v6));
-        const right = Vec3.set(this.v9,0, 1, 0);
+        const right = Vec3.set(this.v9, 0, 1, 0);
         if (Vec3.equals(forward, right)) {
             Vec3.set(right, 0, 0, -1);
         } else {
-            Vec3.cross(Vec3.normalised(Vec3.set(this.v10,0, 1, 0)), forward, right);
+            Vec3.cross(Vec3.normalised(Vec3.set(this.v10, 0, 1, 0)), forward, right);
         }
 
         const up = Vec3.cross(forward, right, this.v2Raster);

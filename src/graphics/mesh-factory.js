@@ -1,5 +1,5 @@
+import { BoundingBox } from "../mathematics/bounding-box";
 import { Mesh } from "./mesh";
-import {BoundingBox} from "../mathematics/bounding-box";
 
 const christmasTreeVertices = [
     [        0,    39.034,         0], [  0.76212,    36.843,         0],

@@ -4,7 +4,6 @@ export const Svg = function () {
 
     this._svgTagOpen = function () {
         return "<svg version=\"1.1\" " +
-            "xmlns:xlink=\"http://www.w3.org/1999/xlink\" " +
             "xmlns=\"http://www.w3.org/2000/svg\" " +
             "height=\"" + _self._height + "\" " +
             "width=\"" + _self._width + "\">\n";

@@ -79,12 +79,10 @@ export const isEmpty = function (array) {
     return (array != null && array.length == 0);
 };
 
-/**
- * Collection Operations
- */
+/** Collections */
 
 export const mergeProperties = function (properties, options) {
-    var i,
+    let i,
         key,
         keys = Object.keys(options),
         option;
@@ -118,7 +116,7 @@ export const mergeProperties = function (properties, options) {
  * @return the original {@code collection}
  */
 export const each = function (collection, callback, context) {
-    var iterator = null;
+    let iterator = null;
 
     if (collection instanceof Array || typeof collection === "string") {
         forEach(collection, callback, context);
@@ -138,10 +136,9 @@ export const each = function (collection, callback, context) {
 };
 
 export const forEach = function (array, callback, context) {
-    var i,
-        ctx = context || this;
+    const ctx = context || this;
 
-    for (i = 0; i < array.length; i += 1) {
+    for (let i = 0; i < array.length; i += 1) {
         callback.call(ctx, array[i], i);
     }
 
@@ -149,21 +146,59 @@ export const forEach = function (array, callback, context) {
 };
 
 export const eachProperty = function (properties, callback, context) {
-    var index,
-        key,
-        keys = Object.keys(properties),
-        ctx = context || this;
+    const keys = Object.keys(properties);
+    const ctx = context || this;
 
-    for (index = 0; index < keys.length; index += 1) {
-        key = keys[index];
+    for (let index = 0; index < keys.length; index += 1) {
+        let key = keys[index];
         callback.call(ctx, key, properties[key], index);
     }
 
     return properties;
 };
 
+export const loop = function (times, callback, context) {
+    const ctx = context || this;
+
+    for (let i = 0; i < times; i = i + 1) {
+        callback.call(ctx, i);
+    }
+};
+
+export const whileLoop = function (condition, callback, context) {
+    const ctx = context || this;
+
+    let i = 0;
+
+    while (condition) {
+        callback.call(ctx, i);
+        i += 1;
+    }
+};
+
+export const untilLoop = function (condition, callback, context) {
+    const ctx = context || this;
+
+    let i = 0;
+
+    do {
+        callback.call(ctx, i);
+        i += 1;
+    } while (condition);
+};
+
+export const forLoop = function (array, start, end, callback, context) {
+    const ctx = context || this;
+
+    let i;
+
+    for (i = start; i < end; i = i + 1) {
+        callback.call(ctx, i);
+    }
+};
+
 /**
- * Iterator
+ * Iterator for linked-list where each node is singly linked to the next node.
  *
  * @param node - must have data and next members
  * @constructor
@@ -176,7 +211,7 @@ export const Iterator = function (node) {
     };
 
     this.next = function () {
-        var data = null;
+        let data = null;
 
         if (node) {
             data = this._node.data;
@@ -189,7 +224,7 @@ export const Iterator = function (node) {
     };
 
     this.iterate = function (callback, context) {
-        var index = 0;
+        let index = 0;
 
         while (this.hasNext()) {
             callback.call((context || this), this.next(), index);
@@ -203,11 +238,10 @@ export const iterate = function (iterable, callback, context) {
 };
 
 export const min = function (array, comparator) {
-    var i,
-        minElement = array[0],
-        value = null;
+    let minElement = array[0];
+    let value = null;
 
-    for (i = 0; i < array.length; i = i + 1) {
+    for (let i = 0; i < array.length; i = i + 1) {
         value = array[i];
 
         if (comparator(value, minElement) < 0) {
@@ -219,11 +253,10 @@ export const min = function (array, comparator) {
 };
 
 export const max = function (array, comparator) {
-    var i,
-        maxElement = array[0],
-        value = null;
+    let maxElement = array[0];
+    let value = null;
 
-    for (i = 0; i < array.length; i = i + 1) {
+    for (let i = 0; i < array.length; i = i + 1) {
         value = array[i];
 
         if (comparator(value, maxElement) > 0) {
@@ -235,10 +268,9 @@ export const max = function (array, comparator) {
 };
 
 export const findIndex = function (array, finder) {
-    var i,
-        foundIndex = -1;
+    let foundIndex = -1;
 
-    for (i = 0; i < array.length; i += 1) {
+    for (let i = 0; i < array.length; i += 1) {
         if (finder(array[i])) {
             foundIndex = i;
             break;
@@ -256,11 +288,10 @@ export const findIndex = function (array, finder) {
  * @return {*} the found element, otherwise returns undefined
  */
 export const find = function (array, finder) {
-    var i,
-        found = undefined,
-        element;
+    let found = undefined;
+    let element;
 
-    for (i = 0; i < array.length; i += 1) {
+    for (let i = 0; i < array.length; i += 1) {
         element = array[i];
 
         if (finder(element)) {
@@ -273,11 +304,11 @@ export const find = function (array, finder) {
 };
 
 export const findAll = function (array, finder) {
-    var i,
-        element,
-        found = [];
+    const  found = [];
 
-    for (i = 0; i < array.length; i += 1) {
+    let element = null;
+
+    for (let i = 0; i < array.length; i += 1) {
         element = array[i];
 
         if (finder(element)) {
@@ -289,7 +320,7 @@ export const findAll = function (array, finder) {
 };
 
 export const includes = function (array, element, matcher) {
-    var predicate = matcher ||
+    const predicate = matcher ||
         function (object) {
             return object === element;
         };
@@ -298,9 +329,7 @@ export const includes = function (array, element, matcher) {
 };
 
 export const every = function (array, matcher) {
-    var i;
-
-    for (i = 0; i < array.length; i += 1) {
+    for (let i = 0; i < array.length; i += 1) {
         if (!matcher(array[i])) {
             return false;
         }
@@ -310,11 +339,11 @@ export const every = function (array, matcher) {
 };
 
 export const collect = function (array, collector) {
-    var i,
-        element,
-        collection = [];
+    const collection = [];
 
-    for (i = 0; i < array.length; i += 1) {
+    let element = null;
+
+    for (let i = 0; i < array.length; i += 1) {
         element = array[i];
         if (collector(element)) {
             collection.push(element);
@@ -325,11 +354,11 @@ export const collect = function (array, collector) {
 };
 
 export const filter = function (array, filter) {
-    var i,
-        element,
-        filtered = [];
+    const filtered = [];
 
-    for (i = 0; i < array.length; i += 1) {
+    let element = null;
+
+    for (let i = 0; i < array.length; i += 1) {
         element = array[i];
 
         if (!filter(element)) {
@@ -351,13 +380,13 @@ export const remove = function (array, matcher) {
 };
 
 export const removeAll = function (array, matcher) {
-    var i,
-        oldArray = array.splice(0),
-        element;
+    const oldArray = array.splice(0);
+
+    let element = null;
 
     array.length = 0;
 
-    for (i = 0; i < oldArray.length; i += 1) {
+    for (let i = 0; i < oldArray.length; i += 1) {
         element = oldArray[i];
 
         if (!matcher(element)) {
@@ -369,10 +398,9 @@ export const removeAll = function (array, matcher) {
 };
 
 export const map = function (array, mapper) {
-    var i,
-        mappedArray = [];
+    const mappedArray = [];
 
-    for (i = 0; i < array.length; i += 1) {
+    for (let i = 0; i < array.length; i += 1) {
         mappedArray.push(mapper(array[i]));
     }
 
@@ -380,17 +408,17 @@ export const map = function (array, mapper) {
 };
 
 export const flatten = function (array) {
-    var i, j,
-        flattenedArray = [],
-        tempFlattenedArray;
+    const flattenedArray = [];
 
-    for (i = 0; i < array.length; i += 1) {
+    let tempFlattenedArray = null;
+
+    for (let i = 0; i < array.length; i += 1) {
         if (!(array[i] instanceof Array)) {
             flattenedArray.push(array[i]);
         } else {
             tempFlattenedArray = this.flatten(array[i]);
 
-            for (j = 0; j < tempFlattenedArray.length; j += 1) {
+            for (let j = 0; j < tempFlattenedArray.length; j += 1) {
                 flattenedArray.push(tempFlattenedArray[j]);
             }
         }
@@ -400,7 +428,7 @@ export const flatten = function (array) {
 };
 
 export const swap = function (array, indexA, indexB) {
-    var swapItem;
+    let swapItem = null;
 
     if (indexA < array.length && indexB < array.length) {
         swapItem = array[indexA];
@@ -412,9 +440,7 @@ export const swap = function (array, indexA, indexB) {
 };
 
 export const pushAll = function (array, elements) {
-    var i;
-
-    for (i = 0; i < elements.length; i += 1) {
+    for (let i = 0; i < elements.length; i += 1) {
         array.push(elements[i]);
     }
 
@@ -422,7 +448,7 @@ export const pushAll = function (array, elements) {
 };
 
 export const popEach = function (array, callback, context) {
-    var ctx = context || this;
+    const ctx = context || this;
 
     while (array.length > 0) {
         callback.apply(ctx, array.pop());
@@ -432,10 +458,9 @@ export const popEach = function (array, callback, context) {
 };
 
 export const array = function () {
-    var i,
-        array = [];
+    const array = [];
 
-    for (i = 0; i < arguments.length; i = i + 1) {
+    for (let i = 0; i < arguments.length; i = i + 1) {
         array.push(arguments[i]);
     }
 
@@ -443,15 +468,15 @@ export const array = function () {
 };
 
 export const next = function (array, index) {
-    var incIndex = index + 1,
-        nextIndex = (incIndex === array.length) ? 0 : incIndex;
+    const incIndex = index + 1;
+    const nextIndex = (incIndex === array.length) ? 0 : incIndex;
 
     return array[nextIndex];
 };
 
 export const previous = function (array, index) {
-    var decIndex = index - 1,
-        previousIndex = (decIndex < 0) ? (array.length - 1) : decIndex;
+    const decIndex = index - 1;
+    const previousIndex = (decIndex < 0) ? (array.length - 1) : decIndex;
 
     return array[previousIndex];
 };
@@ -475,10 +500,9 @@ export const contains = function (properties, key) {
 };
 
 export const size = function (properties) {
-    var size = 0,
-        key;
+    let size = 0;
 
-    for (key in properties) {
+    for (let key in properties) {
         if (properties.hasOwnProperty(key)) {
             size += 1;
         }
@@ -488,10 +512,9 @@ export const size = function (properties) {
 };
 
 export const keys = function (properties) {
-    var keys = [],
-        key;
+    const keys = [];
 
-    for (key in properties) {
+    for (let key in properties) {
         if (properties.hasOwnProperty(key)) {
             keys.push(key);
         }
@@ -501,10 +524,9 @@ export const keys = function (properties) {
 };
 
 export const values = function (properties) {
-    var values = [],
-        key;
+    const values = [];
 
-    for (key in properties) {
+    for (let key in properties) {
         if (properties.hasOwnProperty(key)) {
             values.push(properties[key]);
         }
@@ -514,8 +536,9 @@ export const values = function (properties) {
 };
 
 export const propertiesToArray = function (properties) {
-    var propArray = [],
-        property;
+    const propArray = [];
+
+    let property = null;
 
     eachProperty(properties, function (key, value) {
         property[key] = value;
@@ -561,7 +584,7 @@ Args.prototype.size = function () {
 };
 
 Args.prototype.get = function (index) {
-    var arg = null;
+    let arg = null;
 
     if (!this.empty()) {
         arg = this._args[index];
@@ -571,17 +594,14 @@ Args.prototype.get = function (index) {
 };
 
 Args.prototype.matches = function () {
-    var i,
-        types,
-        matches;
+    const types = arguments;
 
-    types = arguments;
-    matches = true;
+    let matches = true;
 
     if (types.length !== this._args.length) {
         matches = false;
     } else {
-        for (i = 0; i < types.length; i = i + 1) {
+        for (let i = 0; i < types.length; i = i + 1) {
             if (!(this._robustIsSameType(this._args[i], types[i]))) {
                 matches = false;
             }
@@ -592,8 +612,9 @@ Args.prototype.matches = function () {
 };
 
 Args.prototype.match = function (index, type) {
-    var matches = false,
-        arg = this.get(index);
+    const arg = this.get(index);
+
+    let matches = false;
 
     if (arg) {
         matches = this._robustIsSameType(arg.constructor, type);
@@ -603,10 +624,9 @@ Args.prototype.match = function (index, type) {
 };
 
 Args.prototype.matchAll = function (type) {
-    var i,
-        matches = true;
+    let matches = true;
 
-    for (i = 0; i < this._args.length; i += 1) {
+    for (let i = 0; i < this._args.length; i += 1) {
         if (!(this._robustIsSameType(this._args[i], type))) {
             matches = false;
         }
@@ -624,7 +644,7 @@ Args.prototype.clone = function () {
 };
 
 export const Id = function () {
-    var id = 0;
+    let id = 0;
 
     this.next = function () {
         id = id + 1;
@@ -639,7 +659,7 @@ export const callbackWithContext = function (callback, context) {
 };
 
 export const clamp = function (min, max, value) {
-    var clampedValue;
+    let clampedValue = null;
 
     if (value > 0) {
         clampedValue = max;
@@ -655,7 +675,7 @@ export const Interval = function (min, max) {
 };
 
 Interval.clamp = function (value, min, max) {
-    var clampedValue;
+    let clampedValue = null;
 
     if (value <= max && value >= min) {
         clampedValue = value;

@@ -1,6 +1,4 @@
-import {Vec3} from "../mathematics/vec3";
-import {Light} from "./light";
-
+import { Vec3 } from "../mathematics/vec3";
 
 export const Shader = function (options) {
     this.width = options.width;

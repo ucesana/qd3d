@@ -1,5 +1,4 @@
-import {Vec3} from "../mathematics/vec3";
-
+import { Vec3 } from "../mathematics/vec3";
 
 export const Material = function (options) {
     const settings = Object.assign({
@@ -10,8 +9,8 @@ export const Material = function (options) {
         alpha: 1, // transparency
         pattern: function (st) {
             // const scale = 4;
-             //const checker = (((st[0] * scale) % 1.0) > 0.5) ^ (((st[1] * scale) % 1.0) < 0.5);
-             //return 0.2 * (1 - checker) + 0.8 * checker;
+            //const checker = (((st[0] * scale) % 1.0) > 0.5) ^ (((st[1] * scale) % 1.0) < 0.5);
+            //return 0.2 * (1 - checker) + 0.8 * checker;
             return 1;
         }
     }, options || {});

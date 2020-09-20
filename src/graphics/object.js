@@ -1,8 +1,7 @@
-import {Vec3} from "../mathematics/vec3";
-import {Mat44} from "../mathematics/mat44";
-import {Transform} from "../mathematics/transform";
-import {Material} from "./material";
-
+import { Mat44 } from "../mathematics/mat44";
+import { Transform } from "../mathematics/transform";
+import { Vec3 } from "../mathematics/vec3";
+import { Material } from "./material";
 
 export const Object = function () {
     this.position = Vec3.create();
@@ -30,11 +29,11 @@ export const Object = function () {
 
 Object.prototype.positionAndOrient = function (position, orientation = Vec3.create(0, 0, -1)) {
     const forward = Vec3.normalise(orientation, 1, this.v0);
-    const right = Vec3.set(this.v1,0, 1, 0);
+    const right = Vec3.set(this.v1, 0, 1, 0);
     if (Vec3.equals(forward, right)) {
         Vec3.set(right, 0, 0, -1);
     } else {
-        Vec3.cross(Vec3.normalised(Vec3.set(this.v2,0, 1, 0)), forward, right);
+        Vec3.cross(Vec3.normalised(Vec3.set(this.v2, 0, 1, 0)), forward, right);
     }
 
     const up = Vec3.cross(forward, right, this.v3);

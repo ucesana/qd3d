@@ -1,4 +1,4 @@
-import {Vec2} from "./vec2";
+import { Vec2 } from "./vec2";
 
 export const BoundingSquare = function (vertices) {
     const min = Vec2.create(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);

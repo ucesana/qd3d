@@ -1,5 +1,5 @@
+import { math } from "./math";
 import { Vec } from "./vec";
-import {math} from "./math";
 
 export const Vec3 = {
 

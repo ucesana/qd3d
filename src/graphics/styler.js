@@ -1,6 +1,6 @@
-import {cloneProperties, eachProperty, isUndefinedOrNull, mergeProperties} from "../core/common";
-import {Pattern} from "./pattern";
-import {Gradient} from "./gradient";
+import { cloneProperties, eachProperty, isUndefinedOrNull, mergeProperties } from "../core/common";
+import { Gradient } from "./gradient";
+import { Pattern } from "./pattern";
 
 /**
  * Complete list of CanvasRenderingContext2D styles.

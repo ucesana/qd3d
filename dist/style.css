@@ -1,0 +1,23 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+.viewport {
+    border: thin solid black;
+    box-shadow: 10px 10px 5px #888888;
+}
+
+.centre {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.hidden {
+    display: none;
+}

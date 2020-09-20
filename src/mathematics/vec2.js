@@ -1,6 +1,5 @@
-import { Vec } from "./vec";
 import { math } from "./math";
-
+import { Vec } from "./vec";
 
 export const Vec2 = {
 
@@ -220,7 +219,7 @@ export const Vec2 = {
      * @param {Vec2} v
      * @return {Number} length of the vector
      */
-    length:function (v) {
+    length: function (v) {
         const x = v[0];
         const y = v[1];
         return Math.sqrt((x * x) + (y * y));

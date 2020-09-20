@@ -1,5 +1,4 @@
-import {Mat44} from "./mat44";
-
+import { Mat44 } from "./mat44";
 
 export const Transform = {
     translate: function (t, out) {

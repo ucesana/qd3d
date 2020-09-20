@@ -1,11 +1,11 @@
-import {Camera} from "./camera";
-import {Vec2} from "../mathematics/vec2";
-import {Vec3} from "../mathematics/vec3";
-import {Mat44} from "../mathematics/mat44";
-import {Colour} from "./colour";
-import {World} from "./world";
-import {Shader} from "./shader";
-import {math} from "../mathematics/math";
+import { Mat44 } from "../mathematics/mat44";
+import { math } from "../mathematics/math";
+import { Vec2 } from "../mathematics/vec2";
+import { Vec3 } from "../mathematics/vec3";
+import { Camera } from "./camera";
+import { Colour } from "./colour";
+import { Shader } from "./shader";
+import { World } from "./world";
 
 export const VectorRenderer = function (options) {
     const self = this;
@@ -123,8 +123,8 @@ VectorRenderer.prototype.render = function (elapsedSeconds) {
                 camera.applyProjectionAndConvertToNDC(v2World, v2Raster);
 
                 if (this.insideScreen(v0Raster)
-                        || this.insideScreen(v1Raster)
-                        || this.insideScreen(v2Raster)) {
+                    || this.insideScreen(v1Raster)
+                    || this.insideScreen(v2Raster)) {
 
                     const min = this.p0;
                     const max = this.p1;

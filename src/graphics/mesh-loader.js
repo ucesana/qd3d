@@ -1,6 +1,6 @@
-import {Vec2} from "../mathematics/vec2";
-import {Vec3} from "../mathematics/vec3";
-import {Mesh} from "./mesh";
+import { Vec2 } from "../mathematics/vec2";
+import { Vec3 } from "../mathematics/vec3";
+import { Mesh } from "./mesh";
 
 export const MeshLoader = function () {
     this.parse = function (data) {

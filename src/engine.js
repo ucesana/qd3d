@@ -1,8 +1,8 @@
-import {polyFillRequestAnimationFrame, toggleFullScreen} from "./core/document";
-import {RasterRenderer} from "./graphics/raster-renderer";
-import {RaytraceRenderer} from "./graphics/raytrace-renderer";
-import {VectorRenderer} from "./graphics/vector-renderer";
-import {ResourceLoader} from "./core/resource-loader";
+import { polyFillRequestAnimationFrame, toggleFullScreen } from "./core/document";
+import { RasterRenderer } from "./graphics/raster-renderer";
+import { RaytraceRenderer } from "./graphics/raytrace-renderer";
+import { ResourceLoader } from "./core/resource-loader";
+import { VectorRenderer } from "./graphics/vector-renderer";
 
 export const Engine = function (options) {
     const self = this;
@@ -36,18 +36,19 @@ export const Engine = function (options) {
 
             const files = event.dataTransfer.files;
 
-            for (let i = 0, file; file = files[i]; i++) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
                 const fileType = file.name.split(".")[1].toLowerCase();
                 switch (fileType) {
                     case "obj":
                         self.resourceLoader.loadText(file, function (result) {
                             self.world.import(result, "mesh");
                         });
-                    break;
+                        break;
                     case "jpg":
                     case "jpeg":
                     case "png":
-                        self.resourceLoader.loadBufferedImage(file, function (result) {
+                        self.resourceLoader.loadImage(file, function (result) {
                             self.world.import(result, "texture");
                         });
                         break;
@@ -85,6 +86,8 @@ Engine.prototype.handleKeyUp = function (key) {
     switch (key) {
         case "F":
             toggleFullScreen();
+            break;
+        default:
             break;
     }
 };
@@ -139,6 +142,7 @@ Engine.prototype.run = function () {
 
     const self = this;
     self._previousSeconds = Date.now();
+
     function frame() {
         const currentSeconds = Date.now();
         const elapsedSeconds = (currentSeconds - self._previousSeconds);
@@ -147,5 +151,6 @@ Engine.prototype.run = function () {
         self.renderer.render(elapsedSeconds);
         self._frameRequest = window.requestAnimationFrame(frame);
     }
+
     frame();
 };

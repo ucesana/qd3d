@@ -1,5 +1,4 @@
 export const ResourceLoader = function () {
-
 };
 
 ResourceLoader.prototype.loadText = function (file, callback) {
@@ -10,34 +9,35 @@ ResourceLoader.prototype.loadText = function (file, callback) {
     reader.readAsText(file);
 };
 
-ResourceLoader.prototype.loadBufferedImage = function (file, callback) {
+ResourceLoader.prototype.loadImage = function (file, callback) {
+    const self = this;
     const reader = new FileReader();
     reader.onload = function () {
-        const image = document.createElement("img");
-        image.setAttribute("style", "display: none;");
-        document.body.appendChild(image);
-        const downloadingImage = new Image();
-        downloadingImage.onload = function() {
-            image.src = this.src;
-            const imageWidth = image.width;
-            const imageHeight = image.height;
+        const imageElement = document.createElement("img");
+        imageElement.setAttribute("style", "display: none;");
+        document.body.appendChild(imageElement);
+        const image = new Image();
+        image.onload = function () {
+            imageElement.src = this.src;
+            const width = imageElement.width;
+            const height = imageElement.height;
             const canvas = document.createElement("canvas");
             canvas.setAttribute("style", "display: none;");
-            canvas.width = imageWidth;
-            canvas.height = imageHeight;
+            canvas.width = width;
+            canvas.height = height;
             document.body.appendChild(canvas);
             const ctx = canvas.getContext('2d');
-            ctx.drawImage(image, 0, 0, imageWidth, imageHeight);
-            const bufferedImageData = ctx.getImageData(0, 0, imageWidth, imageHeight).data;
+            ctx.drawImage(imageElement, 0, 0, width, height);
+            const data = ctx.getImageData(0, 0, width, height).data;
             canvas.remove();
-            image.remove();
+            imageElement.remove();
             callback({
-                bufferedImageData: bufferedImageData,
-                width: imageWidth,
-                height: imageHeight
+                data: data,
+                width: width,
+                height: height
             });
         };
-        downloadingImage.src = reader.result;
+        image.src = reader.result;
     };
     reader.readAsDataURL(file);
 };

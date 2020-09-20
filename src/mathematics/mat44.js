@@ -1,7 +1,6 @@
 import { Vec } from "./vec";
 import { Vec3 } from "./vec3";
 
-
 export const Mat44 = {
 
     create: function (a = 1, b = 0, c = 0, d = 0,
@@ -105,8 +104,7 @@ export const Mat44 = {
             out[0] = a / w;
             out[1] = b / w;
             out[2] = c / w;
-        }
-        else {
+        } else {
             // m is an affine transformation matrix:
             // w = 1 and no need to waste cycles performing divisions
             out[0] = a;
@@ -152,7 +150,7 @@ export const Mat44 = {
         }
 
         // Forward elimination
-        for (i = 0; i < 3 ; i++) {
+        for (i = 0; i < 3; i++) {
             let pivot = i;
 
             let pivotSize = t[i][i];

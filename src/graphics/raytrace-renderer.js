@@ -1,19 +1,14 @@
-import {Camera} from "./camera";
-import {Vec3} from "../mathematics/vec3";
-import {Mat44} from "../mathematics/mat44";
-import {Colour} from "./colour";
-import {World} from "./world";
-import {ObjectFactory} from "./object-factory";
-import {OBJECT_TYPE} from "./object-factory";
-import {Shader} from "./shader";
-import {math} from "../mathematics/math";
-import {CanvasRaster} from "./canvas-raster";
-import {CanvasBuffer} from "./canvas-buffer";
-import {Light} from "./light";
+import { Mat44 } from "../mathematics/mat44";
+import { math } from "../mathematics/math";
+import { Vec3 } from "../mathematics/vec3";
+import { Camera } from "./camera";
+import { CanvasBuffer } from "./canvas-buffer";
+import { Colour } from "./colour";
+import { OBJECT_TYPE, ObjectFactory } from "./object-factory";
+import { Shader } from "./shader";
+import { World } from "./world";
 
 export const RaytraceRenderer = function (options) {
-    const self = this;
-
     this.init = function (settings) {
         this.settings = Object.assign({
             background: Colour.WHITE,
@@ -44,7 +39,7 @@ export const RaytraceRenderer = function (options) {
         for (let i = 0; i < numSpheres; i++) {
             const randPos = Vec3.create((0.5 - Math.random()) * 250, (0.5 - Math.random()) * 250, (0.5 + Math.random() * 250));
             const randRadius = (0.5 + Math.random() * 64);
-            const bob =  Math.PI * (Math.random() * 90) / 180;
+            const bob = Math.PI * (Math.random() * 90) / 180;
             const amp = Math.random() * 5;
             const sphere = objectFactory.sphere({
                 type: OBJECT_TYPE.GEOMETRIC,

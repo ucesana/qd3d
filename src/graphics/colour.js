@@ -1,5 +1,4 @@
 export const Colour = function () {
-
 };
 
 // httP://WWW.W3.ORG/TR/CSS3-COLOR/#RGBA-COLOR

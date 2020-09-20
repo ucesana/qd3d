@@ -1,13 +1,13 @@
-import {Camera} from "./camera";
-import {Vec} from "../mathematics/vec";
-import {Vec2} from "../mathematics/vec2";
-import {Vec3} from "../mathematics/vec3";
-import {Mat44} from "../mathematics/mat44";
-import {Colour} from "./colour";
-import {World} from "./world";
-import {Shader} from "./shader";
-import {math} from "../mathematics/math";
-import {CanvasBuffer} from "./canvas-buffer";
+import { Mat44 } from "../mathematics/mat44";
+import { math } from "../mathematics/math";
+import { Vec } from "../mathematics/vec";
+import { Vec2 } from "../mathematics/vec2";
+import { Vec3 } from "../mathematics/vec3";
+import { Camera } from "./camera";
+import { CanvasBuffer } from "./canvas-buffer";
+import { Colour } from "./colour";
+import { Shader } from "./shader";
+import { World } from "./world";
 
 export const RasterRenderer = function (options) {
     this.init = function (settings) {

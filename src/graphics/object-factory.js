@@ -1,10 +1,9 @@
-import {Object} from "./object"
-import {MeshFactory} from "./mesh-factory"
-import {MeshLoader} from "./mesh-loader"
-import {math} from "../mathematics/math"
-import {Vec2} from "../mathematics/vec2"
-import {Vec3} from "../mathematics/vec3"
-import {Material} from "./material";
+import { math } from "../mathematics/math"
+import { Vec3 } from "../mathematics/vec3"
+import { Material } from "./material";
+import { MeshFactory } from "./mesh-factory"
+import { MeshLoader } from "./mesh-loader"
+import { Object } from "./object"
 
 export const OBJECT_TYPE = {
     MESH: "mesh",
@@ -12,7 +11,7 @@ export const OBJECT_TYPE = {
     ANALYTIC: "analytic"
 };
 
-export const ObjectFactory = function() {
+export const ObjectFactory = function () {
     this.meshFactory = new MeshFactory();
     this.meshLoader = new MeshLoader();
 
@@ -53,7 +52,7 @@ ObjectFactory.prototype.disk = function (options) {
             disk.intersect = function (origin, direction) {
                 return math.intersectRayAndDisk(origin, direction, disk.position, disk.normal, disk.radiusSquared);
             };
-            disk.getSurfaceAt = function(pHit) {
+            disk.getSurfaceAt = function (pHit) {
                 const nHit = Vec3.normalised(Vec3.subtract(pHit, disk.position, this.v0));
                 const texX = (1 + Math.atan2(nHit[2], nHit[0]) / Math.PI) * 0.5;
                 const texY = Math.acos(nHit[1]) / Math.PI;
@@ -86,7 +85,7 @@ ObjectFactory.prototype.plane = function (options) {
             plane.intersect = function (origin, direction, separation) {
                 return math.intersectRayAndPlane(origin, direction, plane.position, plane.normal);
             };
-            plane.getSurfaceAt = function(point) {
+            plane.getSurfaceAt = function (point) {
                 const nHit = plane.normal;
                 const tex = Vec3.copy(point, this.v1);
                 return {
@@ -118,7 +117,7 @@ ObjectFactory.prototype.sphere = function (options) {
             sphere.intersect = function (origin, direction, separation) {
                 return math.intersectRayAndSphere(origin, direction, sphere.position, sphere.radiusSquared, separation);
             };
-            sphere.getSurfaceAt = function(pHit) {
+            sphere.getSurfaceAt = function (pHit) {
                 const normal = Vec3.normalised(Vec3.subtract(pHit, sphere.position, this.v0));
                 const texX = (1 + Math.atan2(normal[2], normal[0]) / Math.PI) * 0.5;
                 const texY = Math.acos(normal[1]) / Math.PI;
@@ -153,8 +152,8 @@ ObjectFactory.prototype.cube = function (options) {
             break;
         case OBJECT_TYPE.MESH:
         default:
-        cube.type = OBJECT_TYPE.MESH;
-        cube.mesh = this.meshFactory.get("cube", options);
+            cube.type = OBJECT_TYPE.MESH;
+            cube.mesh = this.meshFactory.get("cube", options);
     }
     return cube;
 };

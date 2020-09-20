@@ -1,8 +1,7 @@
-import  { includes, remove } from "./common";
+import { includes, remove } from "./common";
 
 export const download = function (filename, dataUrl, mimeType) {
-    var link = document.createElement('a');
-
+    const link = document.createElement('a');
     link.download = filename;
     link.href = dataUrl;
     link.dataset.downloadurl = [mimeType, link.download, link.href].join(':');
@@ -12,7 +11,7 @@ export const download = function (filename, dataUrl, mimeType) {
 };
 
 export const onTimeout = function (callback, delay) {
-    var id;
+    let id = null;
     return function () {
         clearTimeout(id);
         id = setTimeout(callback, delay);
@@ -38,8 +37,9 @@ export const getElements = function (selector) {
 };
 
 export const hasClass = function (element, className) {
-    var hasClass = false,
-        classNames = element.className;
+    const classNames = element.className;
+
+    let hasClass = false;
 
     if (classNames.search(/\s/)) {
         hasClass = includes(classNames.split(" "), className);
@@ -62,15 +62,15 @@ export const removeClass = function (element, className) {
 
 export const measureElement = function (element) {
     return {
-        width:element.offsetWidth,
-        height:element.offsetHeight
+        width: element.offsetWidth,
+        height: element.offsetHeight
     };
 };
 
 export const measureClientWindow = function () {
     return {
-        width:window.innerWidth || document.body.clientWidth,
-        height:window.innerHeight || document.body.clientHeight
+        width: window.innerWidth || document.body.clientWidth,
+        height: window.innerHeight || document.body.clientHeight
     };
 };
 
@@ -91,10 +91,9 @@ EventTrigger.prototype.init = function () {
  * The {@code EventTrigger} fires the event to all listeners listening to the event.
  */
 EventTrigger.prototype.fire = function () {
-    var i,
-        listener;
+    let listener = null;
 
-    for (i = 0; i < this.listeners.length; i += 1) {
+    for (let i = 0; i < this.listeners.length; i++) {
         listener = this.listeners[i];
         listener.handler.apply(listener.context, arguments);
     }
@@ -111,7 +110,7 @@ EventTrigger.prototype.fire = function () {
  * @param handler
  */
 EventTrigger.prototype.bind = function (namespace, handler, context) {
-    this.listeners.push({ namespace:namespace, handler:handler, context:context });
+    this.listeners.push({ namespace: namespace, handler: handler, context: context });
 };
 
 EventTrigger.prototype.unbind = function (namespace, handler, context) {
@@ -127,8 +126,11 @@ EventTrigger.prototype.destroy = function () {
 };
 
 export const toggleFullScreen = function () {
-    if (!document.fullscreenElement && // alternative standard method
-        !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {  // current working methods
+    if (!document.fullscreenElement
+            && !document.mozFullScreenElement
+            && !document.webkitFullscreenElement
+            && !document.msFullscreenElement) {
+
         if (document.documentElement.requestFullscreen) {
             document.documentElement.requestFullscreen();
         } else if (document.documentElement.msRequestFullscreen) {
@@ -150,9 +152,9 @@ export const toggleFullScreen = function () {
         }
     }
 };
-
 export const polyFillRequestAnimationFrame = function () {
     if (!window.requestAnimationFrame) {
+        //noinspection JSUnresolvedVariable
         window.requestAnimationFrame = (window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame ||
             window.msRequestAnimationFrame ||

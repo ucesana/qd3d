@@ -1,10 +1,8 @@
-import {Vec3} from "../mathematics/vec3";
-import {MeshLoader} from "./mesh-loader";
-import {Object as QDObject} from "./object";
-import {Texture} from "./texture";
-import {Light} from "./light";
-import {Shader} from "./shader";
-
+import { Vec3 } from "../mathematics/vec3";
+import { Light } from "./light";
+import { MeshLoader } from "./mesh-loader";
+import { Object as QDObject } from "./object";
+import { Texture } from "./texture";
 
 export const World = function () {
     this.objects = [];
@@ -54,7 +52,7 @@ World.prototype.import = function (data, type) {
             break;
         case "texture":
             const texture = new Texture();
-            texture.pixels = data.bufferedImageData;
+            texture.pixels = data.data;
             texture.width = data.width;
             texture.height = data.height;
             this.textures.push(texture);

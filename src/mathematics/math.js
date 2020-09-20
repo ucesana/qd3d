@@ -476,7 +476,7 @@ export const math = {
             currentPointX = point[0];
             currentPointY = point[1];
 
-            point = points[(i+1) % pointsCount];
+            point = points[(i + 1) % pointsCount];
             nextPointX = point[0];
             nextPointY = point[1];
 
@@ -828,7 +828,7 @@ math.cosTable = math.generateTable(0, 360, 1, function (degrees) {
 math.fastCos = function (x) {
     var y,
         degrees = math.degrees(x),
-        shift = new Number(degrees);
+        shift = Number(degrees);
 
     if ((shift | 0) === degrees) {
         y = math.cosTable[degrees];
@@ -974,7 +974,7 @@ math.Rectangle.prototype.init = function (pointA, pointB) {
         this.max = Vec2.create(pointA[0], pointB[1]);
         this.width = -width;
         this.height = height;
-    } else if(width > 0 && height < 0) {
+    } else if (width > 0 && height < 0) {
         this.min = Vec2.create(pointA[0], pointB[1]);
         this.max = Vec2.create(pointB[0], pointA[1]);
         this.width = width;

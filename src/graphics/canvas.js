@@ -1,8 +1,8 @@
-import {defaultValue, eachProperty, isDefinedAndNotNull, isUndefinedOrNull, mergeProperties} from "../core/common";
+import { defaultValue, eachProperty, isDefinedAndNotNull, isUndefinedOrNull, mergeProperties } from "../core/common";
 import { getElementById } from "../core/document";
-import { Styler, STYLES } from "./styler";
-import { Vec2 } from "../mathematics/vec2";
 import { math } from "../mathematics/math"
+import { Vec2 } from "../mathematics/vec2";
+import { Styler, STYLES } from "./styler";
 
 /**
  * Canvas is a wrapper for HTMLCanvasElement and its CanvasRenderingContext2D.
@@ -663,7 +663,7 @@ Canvas.prototype.grid = function (cellWidth, cellHeight, x, y) {
     x0 = -marginWidth - shiftX;
     x1 = canvasWidth + marginWidth - shiftX;
 
-    for (row = -margins; row < rows + margins; row += 1)  {
+    for (row = -margins; row < rows + margins; row += 1) {
         y0 = y1 = row * cellHeight - shiftY;
 
         this.line(x0, y0, x1, y1);
@@ -672,8 +672,8 @@ Canvas.prototype.grid = function (cellWidth, cellHeight, x, y) {
     y0 = -marginHeight - shiftY;
     y1 = canvasHeight + marginHeight - shiftY;
 
-    for (col = -margins; col < cols + margins; col += 1)  {
-        x0 = x1 = col * cellWidth  - shiftX;
+    for (col = -margins; col < cols + margins; col += 1) {
+        x0 = x1 = col * cellWidth - shiftX;
 
         this.line(x0, y0, x1, y1);
     }
@@ -807,12 +807,13 @@ Canvas.prototype.onFrame = function () {
 Canvas.prototype.run = function () {
     const canvas = this;
     canvas._previousSeconds = Date.now();
+
     function frame() {
         canvas._frameRequest = window.requestAnimationFrame(frame);
         const currentSeconds = Date.now();
         const elapsedSeconds = (currentSeconds - canvas._previousSeconds);
         canvas._previousSeconds = currentSeconds;
         canvas.onFrame(elapsedSeconds);
-    };
+    }
     frame();
 };
