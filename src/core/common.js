@@ -710,5 +710,6 @@ Interval.prototype.contains = function (interval) {
 };
 
 Interval.prototype.clamp = function (value) {
+
     return Interval.clamp(value, this.min, this.max);
 };
