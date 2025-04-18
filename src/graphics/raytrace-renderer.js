@@ -16,7 +16,6 @@ export const RaytraceRenderer = function (options) {
             wireframeColour: Colour.ORANGE,
             showFaces: true,
             backfaceCulling: true,
-            ambientLight: 0.5,
             translationSpeed: 100,
             rotationSpeed: 0.5,
             reverseYAxis: true,

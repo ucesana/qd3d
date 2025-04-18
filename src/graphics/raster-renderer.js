@@ -17,7 +17,6 @@ export const RasterRenderer = function (options) {
             wireframeColour: Colour.ORANGE,
             showFaces: true,
             backfaceCulling: true,
-            ambientLight: 0.5,
             translationSpeed: 10,
             rotationSpeed: 0.5,
             reverseYAxis: true,

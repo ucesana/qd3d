@@ -138,19 +138,27 @@ Engine.prototype.handleKeyPress = function (elapsedSeconds) {
 };
 
 Engine.prototype.run = function () {
-    polyFillRequestAnimationFrame();
-
     const self = this;
-    self._previousSeconds = Date.now();
+    let fps = 24;
+    let now;
+    let then = Date.now();
+    let interval = 1000 / fps;
+    let delta;
 
-    function frame() {
-        const currentSeconds = Date.now();
-        const elapsedSeconds = (currentSeconds - self._previousSeconds);
-        self._previousSeconds = currentSeconds;
-        self.handleKeyPress(elapsedSeconds);
-        self.renderer.render(elapsedSeconds);
-        self._frameRequest = window.requestAnimationFrame(frame);
+    function draw() {
+
+        requestAnimationFrame(draw);
+
+        now = Date.now();
+        delta = now - then;
+
+        if (delta > interval) {
+            then = now - (delta % interval);
+
+            self.handleKeyPress(delta);
+            self.renderer.render(delta);
+        }
     }
 
-    frame();
+    draw();
 };

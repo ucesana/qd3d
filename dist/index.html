@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<<<<<<< Updated upstream
     <title>Quick and Dirty 3D</title>
 
     <link rel="icon" href="qd.ico">
@@ -36,7 +35,7 @@
 </head>
 <body>
     <canvas id="viewport" class="viewport centre hidden" title="Drop OBJ and texture files here"></canvas>
-
+    <script src="https://cdn.jsdelivr.net/npm/noisejs@2.1.0/index.min.js"></script>
     <script type="text/javascript" src="main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -54,6 +53,7 @@
             // canvas width and height
             const width = 1920;
             // const width = 1440;
+            // const width = 640;
             const height = Math.floor(width * (1 / aspectRatio));
 
             // Setup World
@@ -67,8 +67,10 @@
             cube2.position = qd.Vec3.create(2, 0, -12);
 
             const world = new qd.World();
-            //world.objects.push(cube1);
+            // world.objects.push(cube1);
             //world.objects.push(cube2);
+
+            world.import(objectFactory.perlinSphere(8, 8, 8), "mesh");
 
             const lightA = qd.Light.distant( {
                 red: 1,
@@ -176,12 +178,13 @@
             pointLightsCFolder.add(pointLightCPosZGui, 'value').name('z');
 
             world
+                .light(qd.Light.ambient({red: 1, green: 1, blue: 1, intensity: 0.25}))
                 .light(lightA)
                 .light(lightB)
-                .light(lightC)
-                .light(pointLightA)
-                .light(pointLightB)
-                .light(pointLightC);
+                .light(lightC);
+                // .light(pointLightA)
+                // .light(pointLightB)
+                // .light(pointLightC);
 
             const options = {
                 canvas: "viewport",
@@ -190,18 +193,17 @@
                 pixelWidth: pixelDensity,
                 pixelHeight: pixelDensity,
                 fNear: 1,
-                fFar: 5000,
+                fFar: 2000,
                 fov: 90,
                 showWireframe: false,
                 showFaces: true,
                 wireframeColour: qd.Colour.ORANGE,
                 backfaceCulling: false,
-                ambientLight: 0.18,
                 reverseYAxis: true,
                 translationSpeed: 0.015,
-                rotationSpeed: 0.0005,
+                rotationSpeed: 0.0001,
                 globalRotation: 0,
-                globalRotationSpeed: 0.0005,
+                globalRotationSpeed: 0.001,
                 backgroundColour: qd.Colour.of(0, 0, 0, 1),
                 world: world,
                 renderer: "raster"

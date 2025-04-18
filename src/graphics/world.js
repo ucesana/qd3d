@@ -66,12 +66,6 @@ World.prototype.import = function (data, type) {
 };
 
 World.prototype.light = function (light) {
-    switch (light.type) {
-        case Light.TYPE.AMBIENT:
-            this.ambientLight = light;
-            break;
-        default:
-            this.lights.push(light);
-    }
+    this.lights.push(light);
     return this;
 };
