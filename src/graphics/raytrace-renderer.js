@@ -129,7 +129,9 @@ RaytraceRenderer.prototype.castRay = function (camera, direction) {
         const point = Vec3.add(origin, Vec3.scale(direction, t, this.v11), this.v12);
         const surface = object.getSurfaceAt(point);
         const viewDirection = Vec3.createDirection(point, camera.position, this.v13);
-        pixelColour = this.shader.shade(point, surface, viewDirection);
+        surface.point = point;
+        surface.viewDirection = viewDirection;
+        pixelColour = this.shader.shade(surface);
     }
 
     return pixelColour;

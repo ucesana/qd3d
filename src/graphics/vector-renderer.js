@@ -60,6 +60,7 @@ export const VectorRenderer = function (options) {
         this.v2 = Vec3.create();
 
         this.face = {
+            point: null,
             object: null,
             material: null,
             normal: null
@@ -131,11 +132,12 @@ VectorRenderer.prototype.render = function (elapsedSeconds) {
                     math.minMaxTriangle(v0Raster, v1Raster, v2Raster, min, max);
 
                     const face = this.face;
+                    face.point = faceCentre;
                     face.object = object;
                     face.material = object.material;
                     face.normal = faceNormal;
 
-                    const pixelColour = this.shader.shade(faceCentre, face);
+                    const pixelColour = this.shader.shade(face);
                     const fillColour = Colour.toRgb(pixelColour);
 
                     rasterTriangles.push({

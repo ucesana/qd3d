@@ -10,6 +10,53 @@ import { Shader } from "./shader";
 import { World } from "./world";
 
 export const RasterRenderer = function (options) {
+    this.initVecPool = function () {
+        this.p0 = Vec2.create();
+        this.p1 = Vec2.create();
+        this.p2 = Vec2.create();
+
+        this.v0World = Vec3.create();
+        this.v1World = Vec3.create();
+        this.v2World = Vec3.create();
+        this.v0Camera = Vec3.create();
+        this.v1Camera = Vec3.create();
+        this.v2Camera = Vec3.create();
+        this.v0Screen = Vec.create(0, 0, 0, 1);
+        this.v1Screen = Vec.create(0, 0, 0, 1);
+        this.v2Screen = Vec.create(0, 0, 0, 1);
+        this.vp0Screen = Vec3.create();
+        this.vp1Screen = Vec3.create();
+        this.vp2Screen = Vec3.create();
+        this.v0NDC = Vec2.create();
+        this.v1NDC = Vec2.create();
+        this.v2NDC = Vec2.create();
+        this.v0Raster = Vec2.create();
+        this.v1Raster = Vec2.create();
+        this.v2Raster = Vec2.create();
+
+        this.faceNormal = Vec3.create();
+        this.faceCentre = Vec3.create();
+        this.cameraRay = Vec3.create();
+        this.st0 = Vec3.create();
+        this.st1 = Vec3.create();
+        this.st2 = Vec3.create();
+        this.v15 = Vec3.create();
+        this.v16 = Vec3.create();
+        this.v17 = Vec3.create();
+        this.v18 = Vec3.create();
+        this.v19 = Vec3.create();
+        this.vn0 = Vec3.create();
+        this.vn1 = Vec3.create();
+        this.vn2 = Vec3.create();
+        this.v23 = Vec3.create();
+        this.v24 = Vec3.create();
+        this.v25 = Vec3.create();
+        this.v26 = Vec3.create();
+        this.v27 = Vec3.create();
+        this.v28 = Vec3.create();
+        this.v29 = Vec3.create();
+    }
+
     this.init = function (settings) {
         this.settings = Object.assign({
             background: Colour.WHITE,
@@ -65,53 +112,11 @@ export const RasterRenderer = function (options) {
             this.frameBuffer.push(colVec);
         }
 
-        // Cache
-        this.p0 = Vec2.create();
-        this.p1 = Vec2.create();
-        this.p2 = Vec2.create();
-
-        this.v0World = Vec3.create();
-        this.v1World = Vec3.create();
-        this.v2World = Vec3.create();
-        this.v0Camera = Vec3.create();
-        this.v1Camera = Vec3.create();
-        this.v2Camera = Vec3.create();
-        this.v0Screen = Vec.create(0, 0, 0, 1);
-        this.v1Screen = Vec.create(0, 0, 0, 1);
-        this.v2Screen = Vec.create(0, 0, 0, 1);
-        this.vp0Screen = Vec3.create();
-        this.vp1Screen = Vec3.create();
-        this.vp2Screen = Vec3.create();
-        this.v0NDC = Vec2.create();
-        this.v1NDC = Vec2.create();
-        this.v2NDC = Vec2.create();
-        this.v0Raster = Vec2.create();
-        this.v1Raster = Vec2.create();
-        this.v2Raster = Vec2.create();
-
-        this.faceNormal = Vec3.create();
-        this.faceCentre = Vec3.create();
-        this.cameraRay = Vec3.create();
-        this.st0 = Vec3.create();
-        this.st1 = Vec3.create();
-        this.st2 = Vec3.create();
-        this.v15 = Vec3.create();
-        this.v16 = Vec3.create();
-        this.v17 = Vec3.create();
-        this.v18 = Vec3.create();
-        this.v19 = Vec3.create();
-        this.vn0 = Vec3.create();
-        this.vn1 = Vec3.create();
-        this.vn2 = Vec3.create();
-        this.v23 = Vec3.create();
-        this.v24 = Vec3.create();
-        this.v25 = Vec3.create();
-        this.v26 = Vec3.create();
-        this.v27 = Vec3.create();
-        this.v28 = Vec3.create();
-        this.v29 = Vec3.create();
+        this.initVecPool();
 
         this.face = {
+            point: null,
+            viewDirection: null,
             object: null,
             material: null,
             st: null,
@@ -126,12 +131,185 @@ export const RasterRenderer = function (options) {
     this.init(options);
 };
 
-RasterRenderer.prototype.render = function (elapsedSeconds) {
-    const camera = this.camera;
-    const objects = this.world.objects;
-    const globalRotationDelta = (this.globalRotationSpeed * elapsedSeconds);
-    this.globalRotation = this.globalRotation + globalRotationDelta;
+RasterRenderer.prototype.scaleTextureVertices = function (textureVertices, textures, vertex0, v0Screen, vertex1, v1Screen, vertex2, v2Screen) {
+    let st0 = null;
+    let st1 = null;
+    let st2 = null;
+    if (textureVertices && textureVertices.length > 0) {
+        st0 = Vec2.scale(textureVertices[textures[vertex0]], v0Screen[2], this.st0);
+        st1 = Vec2.scale(textureVertices[textures[vertex1]], v1Screen[2], this.st1);
+        st2 = Vec2.scale(textureVertices[textures[vertex2]], v2Screen[2], this.st2);
+    }
+    return {st0, st1, st2};
+}
 
+RasterRenderer.prototype.toLocalVertexNormals = function (vertexNormals, normals, vertex0, vertex1, vertex2, object) {
+    let vn0 = null;
+    let vn1 = null;
+    let vn2 = null;
+    if (vertexNormals && vertexNormals.length > 0) {
+        vn0 = vertexNormals[normals[vertex0]];
+        vn1 = vertexNormals[normals[vertex1]];
+        vn2 = vertexNormals[normals[vertex2]];
+
+        vn0 = Vec3.normalised(Mat44.multiplyDirection(vn0, object.transformNormals, this.vn0));
+        vn1 = Vec3.normalised(Mat44.multiplyDirection(vn1, object.transformNormals, this.vn1));
+        vn2 = Vec3.normalised(Mat44.multiplyDirection(vn2, object.transformNormals, this.vn2));
+    }
+    return {vn0, vn1, vn2};
+}
+
+RasterRenderer.prototype.createFace = function (textureVertices, st0, w0z, st1, w1z, st2, w2z, z, v0World, v1World, v2World, camera, object, faceNormal, vn0, vn1, vn2) {
+    let st = Vec2.set(this.v19, 0, 0);
+    if (textureVertices && textureVertices.length > 0) {
+        st = Vec2.add(
+            Vec2.add(
+                Vec2.scale(st0, w0z, this.v15),
+                Vec2.scale(st1, w1z, this.v16),
+                this.v17
+            ),
+            Vec2.scale(st2, w2z, this.v18),
+            this.v19
+        );
+        Vec2.scaled(st, z);
+    }
+
+    const point = Vec3.add(
+        Vec3.add(
+            Vec3.scale(v0World, w0z, this.v23),
+            Vec3.scale(v1World, w1z, this.v24),
+            this.v25
+        ),
+        Vec3.scale(v2World, w2z, this.v26),
+        this.v27
+    );
+    const viewDirection = Vec3.createDirection(point, camera.position, this.v28);
+
+    const face = this.face;
+    face.point = point;
+    face.viewDirection = viewDirection;
+    face.object = object;
+    face.material = object.material;
+    face.st = st;
+    face.uv = Vec3.set(this.v29, w0z, w1z, w2z);
+    face.normal = faceNormal;
+    face.vn0 = vn0;
+    face.vn1 = vn1;
+    face.vn2 = vn2;
+    return face;
+}
+
+RasterRenderer.prototype.renderFace = function (camera, v0World, v1World, v2World, textureVertices, textures, vertex0, vertex1, vertex2, vertexNormals, normals, object, faceNormal) {
+    const v0Camera = camera.toCameraSpace(v0World, this.v0Camera);
+    const v1Camera = camera.toCameraSpace(v1World, this.v1Camera);
+    const v2Camera = camera.toCameraSpace(v2World, this.v2Camera);
+
+    const v0Screen = camera.applyProjection(v0Camera, this.v0Screen);
+    const v1Screen = camera.applyProjection(v1Camera, this.v1Screen);
+    const v2Screen = camera.applyProjection(v2Camera, this.v2Screen);
+
+    if (this.withinNearAndFar(v0Screen, v1Screen, v2Screen)) {
+
+        const vp0Screen = this.perspectiveDivide(v0Screen, this.vp0Screen);
+        const vp1Screen = this.perspectiveDivide(v1Screen, this.vp1Screen);
+        const vp2Screen = this.perspectiveDivide(v2Screen, this.vp2Screen);
+
+        const v0NDC = camera.toNdc(vp0Screen, this.v0NDC);
+        const v1NDC = camera.toNdc(vp1Screen, this.v1NDC);
+        const v2NDC = camera.toNdc(vp2Screen, this.v2NDC);
+
+        const v0Raster = camera.toRaster(v0NDC, this.v0Raster);
+        const v1Raster = camera.toRaster(v1NDC, this.v1Raster);
+        const v2Raster = camera.toRaster(v2NDC, this.v2Raster);
+
+        if (this.withinViewport(v0Raster, v1Raster, v2Raster)) {
+            const area = math.edgeFunction(v0Raster, v1Raster, v2Raster);
+            if (area > 0) {
+                const oneOnArea = 1 / area;
+
+                const {
+                    st0,
+                    st1,
+                    st2
+                } = this.scaleTextureVertices(textureVertices, textures, vertex0, v0Screen, vertex1, v1Screen, vertex2, v2Screen);
+
+                const {vn0, vn1, vn2} = this.toLocalVertexNormals(vertexNormals, normals, vertex0, vertex1, vertex2, object);
+
+                const min = this.p0;
+                const max = this.p1;
+                const pixelSample = this.p2;
+                math.minMaxTriangle(v0Raster, v1Raster, v2Raster, min, max);
+
+                for (let y = min[1]; y < max[1]; y++) {
+                    for (let x = min[0]; x < max[0]; x++) {
+                        Vec2.set(pixelSample, x + 0.5, y + 0.5);
+                        if (this.insideScreen(pixelSample)) {
+                            let w0 = math.edgeFunction(v1Raster, v2Raster, pixelSample);
+                            let w1 = math.edgeFunction(v2Raster, v0Raster, pixelSample);
+                            let w2 = math.edgeFunction(v0Raster, v1Raster, pixelSample);
+                            if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
+                                // Perspective correct depth
+                                const w0z = w0 * oneOnArea;
+                                const w1z = w1 * oneOnArea;
+                                const w2z = w2 * oneOnArea;
+
+                                const v0z = v0Screen[2];
+                                const v1z = v1Screen[2];
+                                const v2z = v2Screen[2];
+
+                                const zDivisor = (w0z * v0z + w1z * v1z + w2z * v2z);
+                                if (zDivisor < 0) {
+                                    let z = 1 / zDivisor;
+
+                                    if (z < this.depthBuffer[y][x]) {
+                                        this.depthBuffer[y][x] = z;
+
+                                        const face = this.createFace(textureVertices, st0, w0z, st1, w1z, st2, w2z, z, v0World, v1World, v2World, camera, object, faceNormal, vn0, vn1, vn2);
+
+                                        const pixelColour = this.shader.shade(face);
+                                        Colour.copy(pixelColour, this.frameBuffer[y][x]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+RasterRenderer.prototype.renderFaces = function (faceCount, vertices, triangles, object, camera, textureVertices, textures, vertexNormals, normals) {
+    for (let i = 0; i < faceCount; i++) {
+        // Extract the face's vertices in the object's local space
+        const vertex0 = i * 3;
+        const vertex1 = vertex0 + 1;
+        const vertex2 = vertex0 + 2;
+        const v0Local = vertices[triangles[vertex0]];
+        const v1Local = vertices[triangles[vertex1]];
+        const v2Local = vertices[triangles[vertex2]];
+
+        // Convert the vertices to world space
+        const v0World = Mat44.multiplyVector(v0Local, object.localToWorld, this.v0World);
+        const v1World = Mat44.multiplyVector(v1Local, object.localToWorld, this.v1World);
+        const v2World = Mat44.multiplyVector(v2Local, object.localToWorld, this.v2World);
+
+        // Do not draw faces whose normals point away from camera
+        const faceNormal = math.triangleNormal(v0World, v1World, v2World, this.faceNormal);
+        const faceCentre = math.triangleCentroid(v0World, v1World, v2World, this.faceCentre);
+        const cameraRay = Vec3.createDirection(faceCentre, camera.position, this.cameraRay);
+        let drawFace = true;
+        if (this.settings.backfaceCulling) {
+            drawFace = (Vec3.dot(faceNormal, cameraRay) >= 0);
+        }
+
+        if (drawFace) {
+            this.renderFace(camera, v0World, v1World, v2World, textureVertices, textures, vertex0, vertex1, vertex2, vertexNormals, normals, object, faceNormal);
+        }
+    }
+}
+
+RasterRenderer.prototype.renderObjects = function (objects, globalRotationDelta, camera) {
     for (let i = 0; i < objects.length; i++) {
         const object = objects[i];
         const mesh = object.mesh;
@@ -150,158 +328,11 @@ RasterRenderer.prototype.render = function (elapsedSeconds) {
 
         camera.update();
 
-        for (let i = 0; i < faceCount; i++) {
-            // Extract the face's vertices in the object's local space
-            const vertex0 = i * 3;
-            const vertex1 = vertex0 + 1;
-            const vertex2 = vertex0 + 2;
-            const v0Local = vertices[triangles[vertex0]];
-            const v1Local = vertices[triangles[vertex1]];
-            const v2Local = vertices[triangles[vertex2]];
-
-            // Convert the vertices to world space
-            const v0World = Mat44.multiplyVector(v0Local, object.localToWorld, this.v0World);
-            const v1World = Mat44.multiplyVector(v1Local, object.localToWorld, this.v1World);
-            const v2World = Mat44.multiplyVector(v2Local, object.localToWorld, this.v2World);
-
-            // Do not draw faces whose normals point away from camera
-            const faceNormal = math.triangleNormal(v0World, v1World, v2World, this.faceNormal);
-            const faceCentre = math.triangleCentroid(v0World, v1World, v2World, this.faceCentre);
-            const cameraRay = Vec3.createDirection(faceCentre, camera.position, this.cameraRay);
-            let drawFace = true;
-            if (this.settings.backfaceCulling) {
-                drawFace = (Vec3.dot(faceNormal, cameraRay) >= 0);
-            }
-
-            if (drawFace) {
-                const v0Camera = camera.toCameraSpace(v0World, this.v0Camera);
-                const v1Camera = camera.toCameraSpace(v1World, this.v1Camera);
-                const v2Camera = camera.toCameraSpace(v2World, this.v2Camera);
-
-                const v0Screen = camera.applyProjection(v0Camera, this.v0Screen);
-                const v1Screen = camera.applyProjection(v1Camera, this.v1Screen);
-                const v2Screen = camera.applyProjection(v2Camera, this.v2Screen);
-
-                if (this.withinNearAndFar(v0Screen, v1Screen, v2Screen)) {
-
-                    const vp0Screen = this.perspectiveDivide(v0Screen, this.vp0Screen);
-                    const vp1Screen = this.perspectiveDivide(v1Screen, this.vp1Screen);
-                    const vp2Screen = this.perspectiveDivide(v2Screen, this.vp2Screen);
-
-                    const v0NDC = camera.toNdc(vp0Screen, this.v0NDC);
-                    const v1NDC = camera.toNdc(vp1Screen, this.v1NDC);
-                    const v2NDC = camera.toNdc(vp2Screen, this.v2NDC);
-
-                    const v0Raster = camera.toRaster(v0NDC, this.v0Raster);
-                    const v1Raster = camera.toRaster(v1NDC, this.v1Raster);
-                    const v2Raster = camera.toRaster(v2NDC, this.v2Raster);
-
-                    if (this.withinViewport(v0Raster, v1Raster, v2Raster)) {
-                        const area = math.edgeFunction(v0Raster, v1Raster, v2Raster);
-                        if (area > 0) {
-                            const oneOnArea = 1 / area;
-
-                            let st0 = null;
-                            let st1 = null;
-                            let st2 = null;
-                            if (textureVertices && textureVertices.length > 0) {
-                                st0 = Vec2.scale(textureVertices[textures[vertex0]], v0Screen[2], this.st0);
-                                st1 = Vec2.scale(textureVertices[textures[vertex1]], v1Screen[2], this.st1);
-                                st2 = Vec2.scale(textureVertices[textures[vertex2]], v2Screen[2], this.st2);
-                            }
-
-                            let vn0 = null;
-                            let vn1 = null;
-                            let vn2 = null;
-                            if (vertexNormals && vertexNormals.length > 0) {
-                                vn0 = vertexNormals[normals[vertex0]];
-                                vn1 = vertexNormals[normals[vertex1]];
-                                vn2 = vertexNormals[normals[vertex2]];
-
-                                vn0 = Vec3.normalised(Mat44.multiplyDirection(vn0, object.transformNormals, this.vn0));
-                                vn1 = Vec3.normalised(Mat44.multiplyDirection(vn1, object.transformNormals, this.vn1));
-                                vn2 = Vec3.normalised(Mat44.multiplyDirection(vn2, object.transformNormals, this.vn2));
-                            }
-
-                            const min = this.p0;
-                            const max = this.p1;
-                            const pixelSample = this.p2;
-                            math.minMaxTriangle(v0Raster, v1Raster, v2Raster, min, max);
-
-                            for (let y = min[1]; y < max[1]; y++) {
-                                for (let x = min[0]; x < max[0]; x++) {
-                                    Vec2.set(pixelSample, x + 0.5, y + 0.5);
-                                    if (this.insideScreen(pixelSample)) {
-                                        let w0 = math.edgeFunction(v1Raster, v2Raster, pixelSample);
-                                        let w1 = math.edgeFunction(v2Raster, v0Raster, pixelSample);
-                                        let w2 = math.edgeFunction(v0Raster, v1Raster, pixelSample);
-                                        if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
-                                            // Perspective correct depth
-                                            const w0z = w0 * oneOnArea;
-                                            const w1z = w1 * oneOnArea;
-                                            const w2z = w2 * oneOnArea;
-
-                                            const v0z = v0Screen[2];
-                                            const v1z = v1Screen[2];
-                                            const v2z = v2Screen[2];
-
-                                            const zDivisor = (w0z * v0z + w1z * v1z + w2z * v2z);
-                                            if (zDivisor < 0) {
-                                                let z = 1 / zDivisor;
-
-                                                if (z < this.depthBuffer[y][x]) {
-                                                    this.depthBuffer[y][x] = z;
-
-                                                    let st = Vec2.set(this.v19, 0, 0);
-                                                    if (textureVertices && textureVertices.length > 0) {
-                                                        st = Vec2.add(
-                                                            Vec2.add(
-                                                                Vec2.scale(st0, w0z, this.v15),
-                                                                Vec2.scale(st1, w1z, this.v16),
-                                                                this.v17
-                                                            ),
-                                                            Vec2.scale(st2, w2z, this.v18),
-                                                            this.v19
-                                                        );
-                                                        Vec2.scaled(st, z);
-                                                    }
-
-                                                    const point = Vec3.add(
-                                                        Vec3.add(
-                                                            Vec3.scale(v0World, w0z, this.v23),
-                                                            Vec3.scale(v1World, w1z, this.v24),
-                                                            this.v25
-                                                        ),
-                                                        Vec3.scale(v2World, w2z, this.v26),
-                                                        this.v27
-                                                    );
-                                                    const viewDirection = Vec3.createDirection(point, camera.position, this.v28);
-
-                                                    const face = this.face;
-                                                    face.object = object;
-                                                    face.material = object.material;
-                                                    face.st = st;
-                                                    face.uv = Vec3.set(this.v29, w0z, w1z, w2z);
-                                                    face.normal = faceNormal;
-                                                    face.vn0 = vn0;
-                                                    face.vn1 = vn1;
-                                                    face.vn2 = vn2;
-
-                                                    const pixelColour = this.shader.shade(point, face, viewDirection);
-                                                    Colour.copy(pixelColour, this.frameBuffer[y][x]);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        this.renderFaces(faceCount, vertices, triangles, object, camera, textureVertices, textures, vertexNormals, normals);
     }
+}
 
+RasterRenderer.prototype.drawCanvas = function () {
     for (let y = 0; y < this.settings.imageHeight; y++) {
         for (let x = 0; x < this.settings.imageWidth; x++) {
             const pixelColour = this.frameBuffer[y][x];
@@ -312,7 +343,16 @@ RasterRenderer.prototype.render = function (elapsedSeconds) {
             Colour.copy(this.backgroundColour, this.frameBuffer[y][x]);
         }
     }
+}
 
+RasterRenderer.prototype.render = function (elapsedSeconds) {
+    const camera = this.camera;
+    const objects = this.world.objects;
+    const globalRotationDelta = (this.globalRotationSpeed * elapsedSeconds);
+    this.globalRotation = this.globalRotation + globalRotationDelta;
+
+    this.renderObjects(objects, globalRotationDelta, camera);
+    this.drawCanvas();
     this.canvasRaster.update();
 };
 

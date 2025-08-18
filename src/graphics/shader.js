@@ -23,7 +23,9 @@ export const Shader = function (options) {
     this.pixel = Uint8ClampedArray.of(0, 0, 0, 0);
 };
 
-Shader.prototype.shade = function (point, face, viewDirection) {
+Shader.prototype.shade = function (face) {
+    const point = face.point;
+    const viewDirection = face.viewDirection;
     const world = this.world;
 
     let redSum = 0;

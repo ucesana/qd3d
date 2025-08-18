@@ -219,7 +219,7 @@ ObjectFactory.prototype.terrain = function (options) {
     return generateTerrainOBJ(100, 100, 4);
 };
 
-ObjectFactory.prototype.perlinSphere = function () {
+ObjectFactory.prototype.perlinSphere = function (latBands, lonBands, radius) {
     function generateSphereTerrainOBJ(latBands, lonBands, radius) {
         const noise = new Noise(Math.random());
         const vertices = [];
@@ -290,9 +290,10 @@ ObjectFactory.prototype.perlinSphere = function () {
         return obj;
     }
 
-    const lat = 128;
-    const lon = lat * 2;
-    return generateSphereTerrainOBJ(lat, lon, 10); // lat, lon, radius
+    // const lat = 128;
+    // const lon = lat * 2;
+    // return generateSphereTerrainOBJ(lat, lon, 10); // lat, lon, radius
+    return generateSphereTerrainOBJ(latBands, lonBands, radius); // lat, lon, radius
 };
 
 ObjectFactory.prototype.perlinIcosphere = function (displacement = 60, radius = 50, subdivisions = 6) {
