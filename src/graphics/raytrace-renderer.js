@@ -86,11 +86,11 @@ RaytraceRenderer.prototype.render = function (elapsedSeconds) {
 
     for (let i = 0; i < this.world.objects.length; i++) {
         const object = this.world.objects[i];
-        object.bob += 0.08;
-        const delta = object.amp * Math.sin(object.bob);
-        Vec3.added(object.position, Vec3.normalise(object.forward, delta));
-        Vec3.added(object.position, Vec3.normalise(object.up, delta));
-        Vec3.added(object.position, Vec3.normalise(object.right, delta));
+        // object.bob += 0.08;
+        // const delta = object.amp * Math.sin(object.bob);
+        // Vec3.added(object.position, Vec3.normalise(object.forward, delta));
+        // Vec3.added(object.position, Vec3.normalise(object.up, delta));
+        // Vec3.added(object.position, Vec3.normalise(object.right, delta));
         object.update();
     }
 

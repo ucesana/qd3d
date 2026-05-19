@@ -5,8 +5,8 @@
   "scripts": {
     "test": "./node_modules/karma/bin/karma start karma.conf.js",
     "build": "webpack",
-    "launch": "open dist/index.html",
-    "develop": "webpack --mode development --watch",
+    "start": "open dist/index.html",
+    "dev": "webpack --mode development --watch",
     "prod": "webpack --mode production"
   },
   "keywords": [],

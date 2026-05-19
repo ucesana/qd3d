@@ -5,12 +5,12 @@ export const Material = function (options) {
         ambient: Vec3.create(1, 1, 1), // ambient reflection coefficient
         diffuse: Vec3.create(1, 1, 1), // diffuse reflection coefficient
         specular: Vec3.create(1, 1, 1), // specular reflection coefficient
-        shininess: 2, //shininess constant
+        shininess: 1, //shininess constant
         alpha: 1, // transparency
         pattern: function (st) {
-            // const scale = 4;
-            //const checker = (((st[0] * scale) % 1.0) > 0.5) ^ (((st[1] * scale) % 1.0) < 0.5);
-            //return 0.2 * (1 - checker) + 0.8 * checker;
+            // const scale = 32;
+            // const checker = (((st[0] * scale) % 1.0) > 0.5) ^ (((st[1] * scale) % 1.0) < 0.5);
+            // return 0.2 * (1 - checker) + 0.8 * checker;
             return 1;
         }
     }, options || {});

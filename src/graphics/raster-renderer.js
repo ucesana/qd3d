@@ -244,9 +244,9 @@ RasterRenderer.prototype.renderFace = function (camera, v0World, v1World, v2Worl
                     for (let x = min[0]; x < max[0]; x++) {
                         Vec2.set(pixelSample, x + 0.5, y + 0.5);
                         if (this.insideScreen(pixelSample)) {
-                            let w0 = math.edgeFunction(v1Raster, v2Raster, pixelSample);
-                            let w1 = math.edgeFunction(v2Raster, v0Raster, pixelSample);
-                            let w2 = math.edgeFunction(v0Raster, v1Raster, pixelSample);
+                            const w0 = math.edgeFunction(v1Raster, v2Raster, pixelSample);
+                            const w1 = math.edgeFunction(v2Raster, v0Raster, pixelSample);
+                            const w2 = math.edgeFunction(v0Raster, v1Raster, pixelSample);
                             if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
                                 // Perspective correct depth
                                 const w0z = w0 * oneOnArea;
@@ -259,7 +259,7 @@ RasterRenderer.prototype.renderFace = function (camera, v0World, v1World, v2Worl
 
                                 const zDivisor = (w0z * v0z + w1z * v1z + w2z * v2z);
                                 if (zDivisor < 0) {
-                                    let z = 1 / zDivisor;
+                                    const z = 1 / zDivisor;
 
                                     if (z < this.depthBuffer[y][x]) {
                                         this.depthBuffer[y][x] = z;
@@ -279,7 +279,16 @@ RasterRenderer.prototype.renderFace = function (camera, v0World, v1World, v2Worl
     }
 }
 
-RasterRenderer.prototype.renderFaces = function (faceCount, vertices, triangles, object, camera, textureVertices, textures, vertexNormals, normals) {
+RasterRenderer.prototype.drawObject = function (object, camera) {
+    const mesh = object.mesh;
+    const vertices = mesh.vertices;
+    const triangles = mesh.faces;
+    const faceCount = mesh.faceCount;
+    const textureVertices = mesh.textureVertices;
+    const textures = mesh.textures;
+    const vertexNormals = mesh.vertexNormals;
+    const normals = mesh.normals;
+
     for (let i = 0; i < faceCount; i++) {
         // Extract the face's vertices in the object's local space
         const vertex0 = i * 3;
@@ -309,26 +318,14 @@ RasterRenderer.prototype.renderFaces = function (faceCount, vertices, triangles,
     }
 }
 
-RasterRenderer.prototype.renderObjects = function (objects, globalRotationDelta, camera) {
+RasterRenderer.prototype.drawObjects = function (objects, globalRotationDelta, camera) {
     for (let i = 0; i < objects.length; i++) {
         const object = objects[i];
-        const mesh = object.mesh;
-        const vertices = mesh.vertices;
-        const triangles = mesh.faces;
-        const faceCount = mesh.faceCount;
-        const textureVertices = mesh.textureVertices;
-        const textures = mesh.textures;
-        const vertexNormals = mesh.vertexNormals;
-        const normals = mesh.normals;
-
         object.rotation[0] += globalRotationDelta * 0.25;
         object.rotation[1] += globalRotationDelta * 0.5;
         object.rotation[2] += globalRotationDelta * 0.75;
         object.update();
-
-        camera.update();
-
-        this.renderFaces(faceCount, vertices, triangles, object, camera, textureVertices, textures, vertexNormals, normals);
+        this.drawObject(object, camera);
     }
 }
 
@@ -347,12 +344,15 @@ RasterRenderer.prototype.drawCanvas = function () {
 
 RasterRenderer.prototype.render = function (elapsedSeconds) {
     const camera = this.camera;
+    camera.update();
+
     const objects = this.world.objects;
     const globalRotationDelta = (this.globalRotationSpeed * elapsedSeconds);
     this.globalRotation = this.globalRotation + globalRotationDelta;
+    this.drawObjects(objects, globalRotationDelta, camera);
 
-    this.renderObjects(objects, globalRotationDelta, camera);
     this.drawCanvas();
+
     this.canvasRaster.update();
 };
 
@@ -391,25 +391,14 @@ RasterRenderer.prototype.perspectiveDivide = function (vScreen, vpScreen) {
 RasterRenderer.prototype.withinViewport = function (v0, v1, v2) {
     const x0 = v0[0];
     const y0 = v0[1];
-    const z0 = -v0[2];
-
     const x1 = v1[0];
     const y1 = v1[1];
-    const z1 = -v1[2];
-
     const x2 = v2[0];
     const y2 = v2[1];
-    const z2 = -v2[2];
 
     const settings = this.settings;
     const w = settings.imageWidth;
     const h = settings.imageHeight;
-    const n = settings.fNear;
-    const f = settings.fFar;
-
-    // return ((x0 >= 0 && x0 < w && y0 >= 0 && y0 < h && z0 > n && z0 < f)
-    //     || (x1 >= 0 && x1 < w && y1 >= 0 && y1 < h && z1 > n && z1 < f)
-    //     || (x2 >= 0 && x2 < w && y2 >= 0 && y2 < h && z2 > n && z2 < f));
 
     return ((x0 >= 0 && x0 < w && y0 >= 0 && y0 < h)
         || (x1 >= 0 && x1 < w && y1 >= 0 && y1 < h)

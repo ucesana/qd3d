@@ -139,7 +139,7 @@ Engine.prototype.handleKeyPress = function (elapsedSeconds) {
 
 Engine.prototype.run = function () {
     const self = this;
-    let fps = 24;
+    let fps = 60;
     let now;
     let then = Date.now();
     let interval = 1000 / fps;
